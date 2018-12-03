@@ -9,10 +9,12 @@
 // Author: Brandon Edens <brandonedens@gmail.com>
 // Date: 2018-12-02
 
-use std::collections::HashMap;
+use std::collections::{HashMap};
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
+
+use levenshtein::levenshtein;
 
 fn problem1() {
     let file = File::open("input/day2.txt").unwrap();
@@ -42,6 +44,32 @@ fn problem1() {
              two_sum, three_sum, two_sum * three_sum);
 }
 
+fn problem2() {
+    let file = File::open("input/day2.txt").unwrap();
+    let reader = BufReader::new(&file);
+    let lines: Vec<String> = reader.lines().map(|x| x.unwrap()).collect();
+    for i in 0..lines.len() {
+        for j in (i + 1)..lines.len() {
+            if levenshtein(&lines[i], &lines[j]) == 1 {
+                println!("{} {}", lines[i], lines[j]);
+
+                let a = lines[i].chars();
+                let b = lines[j].chars();
+
+                for (x, y) in a.zip(b) {
+                    if x == y {
+                        print!("{}", x);
+                    }
+                }
+                println!("");
+
+                break;
+            }
+        }
+    }
+}
+
 fn main() {
     problem1();
+    problem2();
 }
