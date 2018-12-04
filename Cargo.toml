@@ -6,3 +6,5 @@ edition = "2018"
 
 [dependencies]
 levenshtein = "1.0.3"
+regex = "1.1.0"
+lazy_static = "1.2.0"
