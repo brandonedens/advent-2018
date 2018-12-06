@@ -11,16 +11,17 @@
 
 use std::collections::HashSet;
 use std::fs::File;
-use std::io::BufReader;
 use std::io::prelude::*;
+use std::io::BufReader;
 
 fn repeat_freq() -> i32 {
     let file = File::open("input/day1.txt").unwrap();
     let reader = BufReader::new(&file);
 
-    let readings: Vec<i32> = reader.lines().map(|x| {
-        x.unwrap().parse::<i32>().unwrap()
-    }).collect();
+    let readings: Vec<i32> = reader
+        .lines()
+        .map(|x| x.unwrap().parse::<i32>().unwrap())
+        .collect();
 
     let mut seen: HashSet<i32> = HashSet::new();
     let mut freq = 0;
@@ -39,9 +40,10 @@ fn repeat_freq() -> i32 {
 fn main() {
     let file = File::open("input/day1.txt").unwrap();
     let reader = BufReader::new(&file);
-    let freq: i32 = reader.lines().map(|x| {
-        x.unwrap().parse::<i32>().unwrap()
-    }).sum();
+    let freq: i32 = reader
+        .lines()
+        .map(|x| x.unwrap().parse::<i32>().unwrap())
+        .sum();
     println!("freq: {}", freq);
 
     print!("rep freq: {}", repeat_freq());

@@ -9,11 +9,12 @@
 // Author: Brandon Edens <brandonedens@gmail.com>
 // Date: 2018-12-03
 
-#[macro_use] extern crate lazy_static;
+#[macro_use]
+extern crate lazy_static;
 
 use std::fs::File;
-use std::io::BufReader;
 use std::io::prelude::*;
+use std::io::BufReader;
 
 use regex::Regex;
 
@@ -67,11 +68,12 @@ impl Bounds {
 impl Claim {
     fn from_line(line: &str) -> Self {
         let caps = RE.captures(line).unwrap();
-        Claim { id: caps.get(1).unwrap().as_str().parse::<usize>().unwrap(),
-        x: caps.get(2).unwrap().as_str().parse::<usize>().unwrap(),
-        y: caps.get(3).unwrap().as_str().parse::<usize>().unwrap(),
-        width: caps.get(4).unwrap().as_str().parse::<usize>().unwrap(),
-        height: caps.get(5).unwrap().as_str().parse::<usize>().unwrap(),
+        Claim {
+            id: caps.get(1).unwrap().as_str().parse::<usize>().unwrap(),
+            x: caps.get(2).unwrap().as_str().parse::<usize>().unwrap(),
+            y: caps.get(3).unwrap().as_str().parse::<usize>().unwrap(),
+            width: caps.get(4).unwrap().as_str().parse::<usize>().unwrap(),
+            height: caps.get(5).unwrap().as_str().parse::<usize>().unwrap(),
         }
     }
 
@@ -102,7 +104,10 @@ impl Claim {
 fn problem1() {
     let file = File::open("input/day3.txt").unwrap();
     let reader = BufReader::new(&file);
-    let claims = reader.lines().map(|line| Claim::from_line(&line.unwrap())).collect::<Vec<Claim>>();
+    let claims = reader
+        .lines()
+        .map(|line| Claim::from_line(&line.unwrap()))
+        .collect::<Vec<Claim>>();
 
     let mut grid = Box::new([0usize; 1000 * 1000]);
     for claim in claims {

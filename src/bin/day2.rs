@@ -9,10 +9,10 @@
 // Author: Brandon Edens <brandonedens@gmail.com>
 // Date: 2018-12-02
 
-use std::collections::{HashMap};
+use std::collections::HashMap;
 use std::fs::File;
-use std::io::BufReader;
 use std::io::prelude::*;
+use std::io::BufReader;
 
 use levenshtein::levenshtein;
 
@@ -22,7 +22,7 @@ fn problem1() {
 
     let mut two_sum = 0;
     let mut three_sum = 0;
-    for line in reader.lines() { 
+    for line in reader.lines() {
         let mut map: HashMap<char, usize> = HashMap::new();
         for c in line.unwrap().chars() {
             *map.entry(c).or_insert(0) += 1;
@@ -40,8 +40,7 @@ fn problem1() {
             }
         }
     }
-    println!("{} * {} = {}",
-             two_sum, three_sum, two_sum * three_sum);
+    println!("{} * {} = {}", two_sum, three_sum, two_sum * three_sum);
 }
 
 fn problem2() {
