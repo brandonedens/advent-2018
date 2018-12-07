@@ -80,7 +80,8 @@ struct Sleep {
     end: DateTime<Utc>,
 }
 
-fn problem1() {
+/// Read events from the day 4 file.
+fn read_events() -> Vec<Event> {
     let file = File::open("input/day4.txt").unwrap();
     let reader = BufReader::new(&file);
     let mut events = reader
@@ -88,7 +89,10 @@ fn problem1() {
         .map(|line| Event::from_line(&line.unwrap()))
         .collect::<Vec<Event>>();
     events.sort();
+    events
+}
 
+fn compute_guard_sleep(events: &Vec<Event>) -> HashMap<usize, Vec<Sleep>> {
     // Convert timeline events into guard sleep information.
     let mut current_guard = 0;
     let mut guards: HashMap<usize, Vec<Sleep>> = HashMap::new();
@@ -118,6 +122,30 @@ fn problem1() {
         }
     }
 
+    guards
+}
+
+fn compute_minute_freq(sleep: &Vec<Sleep>) -> Vec<usize> {
+    let one_minute = Duration::minutes(1);
+    let mut minutes = vec![0; 60];
+    for s in sleep {
+        let mut t = s.begin;
+        loop {
+            minutes[t.time().minute() as usize] += 1;
+
+            t = t + one_minute;
+            if t == s.end {
+                break;
+            }
+        }
+    }
+    minutes
+}
+
+fn problem1() {
+    let events = read_events();
+    let guards = compute_guard_sleep(&events);
+
     // Which guard slept the most?
     let mut total_sleep: Vec<(usize, usize)> = guards
         .iter()
@@ -132,20 +160,8 @@ fn problem1() {
     let sleepy_guard_id = total_sleep.last().unwrap().1;
 
     // What minute were they most asleep.
-    let one_minute = Duration::minutes(1);
-    let sleepy_guard_sleep = guards.get(&sleepy_guard_id).unwrap();
-    let mut minutes = vec![0; 60];
-    for sleep in sleepy_guard_sleep {
-        let mut t = sleep.begin;
-        loop {
-            minutes[t.time().minute() as usize] += 1;
-
-            t = t + one_minute;
-            if t == sleep.end {
-                break;
-            }
-        }
-    }
+    let sleepy_guard = guards.get(&sleepy_guard_id).unwrap();
+    let minutes = compute_minute_freq(&sleepy_guard);
     let mut c: Vec<(usize, usize)> = minutes.iter().enumerate().map(|(e, v)| (*v, e)).collect();
     c.sort();
 
@@ -158,6 +174,36 @@ fn problem1() {
     );
 }
 
+fn problem2() {
+    let events = read_events();
+    let guards = compute_guard_sleep(&events);
+    let guard_minute_freq: Vec<(usize, Vec<usize>)> = guards
+        .iter()
+        .map(|(k, v)| (*k, compute_minute_freq(v)))
+        .collect();
+    let mut max_guard_id = None;
+    let mut max_minute = None;
+    let mut max_sleep = 0;
+    for i in 0..60 {
+        for (guard_id, minutes) in guard_minute_freq.iter() {
+            if minutes[i] > max_sleep {
+                max_sleep = minutes[i];
+                max_guard_id = Some(guard_id);
+                max_minute = Some(i);
+            }
+        }
+    }
+    let max_guard_id = max_guard_id.unwrap();
+    let max_minute = max_minute.unwrap();
+    println!(
+        "{} * {} = {}",
+        max_guard_id,
+        max_minute,
+        max_guard_id * max_minute
+    );
+}
+
 fn main() {
     problem1();
+    problem2();
 }
